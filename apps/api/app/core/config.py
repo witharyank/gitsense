@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
     ai_provider: str = "gemini"
+    enable_rate_limiting: bool = False
     session_cookie_name: str = "gitsense_session"
     session_max_age_seconds: int = 60 * 60 * 24 * 14
 

@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
+from app.core.config import Settings
 from app.core.security import decrypt_token
 from app.models.ai_summary import AISummary
 from app.models.chat import Chat, ChatMessage
@@ -21,10 +22,11 @@ def parse_dt(value: str | None) -> datetime | None:
 
 
 class RepositoryService:
-    def __init__(self, db: AsyncSession, github: GitHubService, ai: AIProvider) -> None:
+    def __init__(self, db: AsyncSession, github: GitHubService, ai: AIProvider, settings: Settings) -> None:
         self.db = db
         self.github = github
         self.ai = ai
+        self.settings = settings
 
     async def sync(self, user: User) -> list[Repository]:
         token = decrypt_token(user.access_token_encrypted)
@@ -102,7 +104,7 @@ class RepositoryService:
         try:
             data = await self.ai.repository_summary(context)
         except AIProviderError as exc:
-            raise HTTPException(status_code=exc.status_code, detail=exc.message) from exc
+            raise self._ai_http_exception(exc) from exc
         summary = AISummary(repository_id=repo.id, **data)
         self.db.add(summary)
         await self.db.commit()
@@ -118,7 +120,7 @@ class RepositoryService:
         try:
             answer = await self.ai.chat(await self.ai_context(user, owner, repo_name, selected_files), message)
         except AIProviderError as exc:
-            raise HTTPException(status_code=exc.status_code, detail=exc.message) from exc
+            raise self._ai_http_exception(exc) from exc
         self.db.add(ChatMessage(chat_id=chat.id, role="assistant", content=answer))
         await self.db.commit()
         return chat, answer
@@ -127,14 +129,14 @@ class RepositoryService:
         try:
             return await self.ai.commit_intelligence(await self.ai_context(user, owner, repo_name))
         except AIProviderError as exc:
-            raise HTTPException(status_code=exc.status_code, detail=exc.message) from exc
+            raise self._ai_http_exception(exc) from exc
 
     async def readme(self, user: User, owner: str, repo_name: str) -> GeneratedDoc:
         repo = await self.get_owned(user, owner, repo_name)
         try:
             markdown = await self.ai.readme(await self.ai_context(user, owner, repo_name))
         except AIProviderError as exc:
-            raise HTTPException(status_code=exc.status_code, detail=exc.message) from exc
+            raise self._ai_http_exception(exc) from exc
         doc = GeneratedDoc(repository_id=repo.id, kind="readme", title="README.md", content_markdown=markdown)
         self.db.add(doc)
         await self.db.commit()
@@ -157,6 +159,11 @@ class RepositoryService:
             payload = self._commit_payload(item)
             self.db.add(Commit(repository_id=repository_id, **payload))
         await self.db.commit()
+
+    def _ai_http_exception(self, exc: AIProviderError) -> HTTPException:
+        if exc.status_code == 429 and not self.settings.enable_rate_limiting:
+            return HTTPException(status_code=503, detail="AI provider is temporarily unavailable. Try again shortly.")
+        return HTTPException(status_code=exc.status_code, detail=exc.message)
 
     def _commit_payload(self, item: dict) -> dict:
         author = item.get("author") or {}

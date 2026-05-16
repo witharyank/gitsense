@@ -27,6 +27,7 @@ Gemini setup:
 - Keep `GEMINI_MODEL=gemini-2.0-flash` unless you want to use another compatible Gemini model.
 - Keep `GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/` for the OpenAI-compatible Gemini endpoint.
 - Keep `AI_PROVIDER=gemini`.
+- Local development defaults to `ENABLE_RATE_LIMITING=false`; set `ENABLE_RATE_LIMITING=true` when you want API rate-limit responses enabled again.
 
 OpenAI remains supported for future use by setting `AI_PROVIDER=openai`, `OPENAI_API_KEY`, and `OPENAI_MODEL`.
 
