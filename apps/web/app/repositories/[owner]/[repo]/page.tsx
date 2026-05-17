@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Bot, Code2, Copy, File, Folder, GitCommit, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Bot, Code2, Copy, Database, File, Folder, GitCommit, Layers3, Network, Play, Sparkles, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SkeletonBlock } from "@/components/skeleton";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,24 @@ import { api, type User, type Workspace } from "@/lib/api";
 
 type Summary = Awaited<ReturnType<typeof api.summary>>;
 type Intel = Awaited<ReturnType<typeof api.commitIntel>>;
+type ArchitectureValue = string | string[] | Record<string, unknown> | Array<Record<string, unknown>>;
+type ArchitectureJson = Record<string, ArchitectureValue>;
+type ArchitectureSection = {
+  key: string;
+  title: string;
+  value: ArchitectureValue;
+};
+
+const ARCHITECTURE_SECTIONS = [
+  { key: "components", title: "Components", icon: Layers3 },
+  { key: "flow", title: "Flow", icon: ArrowRight },
+  { key: "entry_point", title: "Entry Point", icon: Play },
+  { key: "entryPoint", title: "Entry Point", icon: Play },
+  { key: "data_flow", title: "Data Flow", icon: Database },
+  { key: "dataFlow", title: "Data Flow", icon: Database },
+  { key: "overview", title: "Overview", icon: Network },
+  { key: "structure", title: "Structure", icon: Folder }
+] as const;
 
 export default function RepositoryWorkspacePage() {
   const params = useParams<{ owner: string; repo: string }>();
@@ -151,7 +169,8 @@ export default function RepositoryWorkspacePage() {
                 {summary ? (
                   <>
                     <Block title="Overview" text={summary.overview} />
-                    <Block title="Architecture" text={summary.architecture} />
+                    <ArchitectureSummary text={summary.architecture} />
+                    <StackSummary items={summary.detected_stack} />
                     <Block title="Purpose" text={summary.probable_purpose} />
                     <Block title="Beginner explanation" text={summary.beginner_explanation} />
                   </>
@@ -218,9 +237,137 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function Block({ title, text }: { title: string; text: string }) {
   return (
-    <div>
-      <div className="mb-1 font-medium text-foreground">{title}</div>
-      <p className="leading-6">{text}</p>
+    <div className="rounded-md border bg-background/50 p-4">
+      <div className="mb-2 text-sm font-semibold text-foreground">{title}</div>
+      <p className="whitespace-pre-wrap leading-6">{text}</p>
     </div>
   );
+}
+
+function StackSummary({ items }: { items: string[] }) {
+  if (!items.length) return null;
+  return (
+    <div className="rounded-md border bg-background/50 p-4">
+      <div className="mb-3 text-sm font-semibold text-foreground">Detected Stack</div>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <span key={item} className="rounded-md border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArchitectureSummary({ text }: { text: string }) {
+  const parsed = parseArchitecture(text);
+  if (!parsed) return <Block title="Architecture" text={text} />;
+
+  const sections = getArchitectureSections(parsed);
+  if (!sections.length) return <Block title="Architecture" text={text} />;
+
+  return (
+    <div className="rounded-md border bg-background/50 p-4">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <div className="text-sm font-semibold text-foreground">Architecture</div>
+          <p className="mt-1 text-xs text-muted-foreground">Structured repository map generated from the AI summary.</p>
+        </div>
+        <Sparkles size={16} className="shrink-0 text-primary" />
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        {sections.map((section) => (
+          <ArchitectureCard key={section.key} section={section} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArchitectureCard({ section }: { section: ArchitectureSection }) {
+  const config = ARCHITECTURE_SECTIONS.find((item) => item.key === section.key);
+  const Icon = config?.icon ?? Network;
+  return (
+    <div className="min-w-0 rounded-md border bg-card/70 p-3">
+      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+          <Icon size={15} />
+        </span>
+        {section.title}
+      </div>
+      <ArchitectureValueView value={section.value} />
+    </div>
+  );
+}
+
+function ArchitectureValueView({ value }: { value: ArchitectureValue }) {
+  if (typeof value === "string") {
+    return <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{value}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    return (
+      <ul className="space-y-2">
+        {value.map((item, index) => (
+          <li key={index} className="rounded-md bg-background/60 px-3 py-2 text-sm leading-6 text-muted-foreground">
+            {renderInlineValue(item)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <dl className="space-y-2">
+      {Object.entries(value).map(([key, item]) => (
+        <div key={key} className="rounded-md bg-background/60 px-3 py-2">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-primary">{formatTitle(key)}</dt>
+          <dd className="mt-1 text-sm leading-6 text-muted-foreground">{renderInlineValue(item)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function renderInlineValue(value: unknown): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (Array.isArray(value)) return value.map(renderInlineValue).filter(Boolean).join(", ");
+  if (typeof value === "object") {
+    return Object.entries(value)
+      .map(([key, item]) => `${formatTitle(key)}: ${renderInlineValue(item)}`)
+      .join("; ");
+  }
+  return String(value);
+}
+
+function parseArchitecture(text: string): ArchitectureJson | null {
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") return null;
+    return parsed as ArchitectureJson;
+  } catch {
+    return null;
+  }
+}
+
+function getArchitectureSections(parsed: ArchitectureJson): ArchitectureSection[] {
+  const preferred = ARCHITECTURE_SECTIONS.flatMap(({ key, title }) => {
+    const value = parsed[key];
+    return value == null ? [] : [{ key, title, value }];
+  });
+  const used = new Set<string>(preferred.map((section) => section.key));
+  const remaining = Object.entries(parsed)
+    .filter(([key, value]) => !used.has(key) && value != null)
+    .map(([key, value]) => ({ key, title: formatTitle(key), value }));
+  return [...preferred, ...remaining];
+}
+
+function formatTitle(value: string): string {
+  return value
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }

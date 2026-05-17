@@ -6,11 +6,21 @@ from typing import Any
 
 
 class AIProviderError(Exception):
-    def __init__(self, message: str, *, status_code: int = 502, provider: str = "ai") -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int = 502,
+        provider: str = "ai",
+        model: str | None = None,
+        response_body: str | None = None,
+    ) -> None:
         super().__init__(message)
         self.message = message
         self.status_code = status_code
         self.provider = provider
+        self.model = model
+        self.response_body = response_body
 
 
 class AIProvider(ABC):
@@ -75,17 +85,17 @@ Open a focused pull request with clear context, tests where appropriate, and a c
 """
 
 
-def parse_json_object(content: str, *, provider: str) -> dict[str, Any]:
+def parse_json_object(content: str, *, provider: str, model: str | None = None) -> dict[str, Any]:
     try:
         parsed = json.loads(content)
     except json.JSONDecodeError:
         match = re.search(r"\{.*\}", content, flags=re.DOTALL)
         if not match:
-            raise AIProviderError("AI provider returned malformed JSON.", status_code=502, provider=provider)
+            raise AIProviderError("AI provider returned malformed JSON.", status_code=502, provider=provider, model=model, response_body=content)
         try:
             parsed = json.loads(match.group(0))
         except json.JSONDecodeError as exc:
-            raise AIProviderError("AI provider returned malformed JSON.", status_code=502, provider=provider) from exc
+            raise AIProviderError("AI provider returned malformed JSON.", status_code=502, provider=provider, model=model, response_body=content) from exc
     if not isinstance(parsed, dict):
-        raise AIProviderError("AI provider returned an unexpected response shape.", status_code=502, provider=provider)
+        raise AIProviderError("AI provider returned an unexpected response shape.", status_code=502, provider=provider, model=model, response_body=content)
     return parsed

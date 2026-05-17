@@ -10,4 +10,6 @@ class GeminiService(OpenAICompatibleProvider):
             api_key=settings.gemini_api_key,
             model=settings.gemini_model,
             base_url=settings.gemini_base_url,
+            max_retries=settings.ai_max_retries,
+            retry_base_delay_seconds=settings.ai_retry_base_delay_seconds,
         )

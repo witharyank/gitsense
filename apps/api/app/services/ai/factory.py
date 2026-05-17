@@ -11,7 +11,7 @@ class DisabledAIService(AIProvider):
         return repository_summary_fallback(context)
 
     async def chat(self, context: dict, question: str) -> str:
-        return "AI is not configured yet. Add GEMINI_API_KEY to enable repository-aware answers."
+        return "AI is not configured yet. Add an API key for the configured provider to enable repository-aware answers."
 
     async def commit_intelligence(self, context: dict) -> dict:
         return commit_intelligence_fallback(context)

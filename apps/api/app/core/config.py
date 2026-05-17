@@ -18,8 +18,13 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.0-flash"
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
     openai_api_key: str = ""
-    openai_model: str = "gpt-4o-mini"
-    ai_provider: str = "gemini"
+    openai_base_url: str = "https://openrouter.ai/api/v1"
+    openai_model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    openai_http_referer: str = "http://localhost:3000"
+    openai_title: str = "GitSense"
+    ai_provider: str = "openai"
+    ai_max_retries: int = 2
+    ai_retry_base_delay_seconds: float = 0.5
     enable_rate_limiting: bool = False
     session_cookie_name: str = "gitsense_session"
     session_max_age_seconds: int = 60 * 60 * 24 * 14
