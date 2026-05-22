@@ -44,7 +44,7 @@ docker compose up --build
 - Web: http://localhost:3000
 - API docs: http://localhost:8000/docs
 
-## Local Development
+## Local Development->
 
 Backend:
 
