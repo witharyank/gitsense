@@ -31,7 +31,7 @@ def repo_read(repo: Repository) -> RepositoryRead:
 
 
 def service(db: AsyncSession, settings: Settings) -> RepositoryService:
-    return RepositoryService(db, GitHubService(settings), get_ai_service(settings))
+    return RepositoryService(db, GitHubService(settings), get_ai_service(settings), settings)
 
 
 @router.post("/sync", response_model=list[RepositoryRead])
