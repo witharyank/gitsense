@@ -3,16 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --background: 222 28% 7%;
-  --foreground: 210 24% 96%;
-  --card: 220 24% 10%;
-  --card-foreground: 210 24% 96%;
-  --muted: 218 17% 17%;
-  --muted-foreground: 216 12% 66%;
-  --border: 216 15% 20%;
+  /* Core */
+  --background: 228 14% 5%;
+  --foreground: 210 20% 96%;
+
+  /* Cards & surfaces */
+  --card: 225 16% 8%;
+  --card-foreground: 210 20% 96%;
+  --popover: 225 18% 10%;
+  --popover-foreground: 210 20% 96%;
+
+  /* Muted / subtle */
+  --muted: 222 12% 14%;
+  --muted-foreground: 218 10% 55%;
+
+  /* Border */
+  --border: 220 12% 16%;
+
+  /* Primary — teal / emerald */
   --primary: 166 76% 46%;
-  --primary-foreground: 215 28% 8%;
+  --primary-foreground: 228 14% 5%;
+
+  /* Secondary */
+  --secondary: 222 12% 14%;
+  --secondary-foreground: 210 20% 96%;
+
+  /* Accent — indigo */
+  --accent: 238 60% 62%;
+  --accent-foreground: 210 20% 96%;
+
+  /* Destructive */
+  --destructive: 0 72% 58%;
+  --destructive-foreground: 210 20% 96%;
+
+  /* Success */
+  --success: 142 64% 46%;
+  --success-foreground: 228 14% 5%;
+
+  /* Warning */
+  --warning: 38 96% 58%;
+  --warning-foreground: 228 14% 5%;
+
+  /* Ring */
+  --ring: 166 76% 46%;
+  --radius: 0.625rem;
 }
+
+/* ─── Global reset ────────────────────────────── */
 
 * {
   border-color: hsl(var(--border));
@@ -20,17 +57,191 @@
 
 html {
   color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% -10%, rgba(20, 184, 166, 0.16), transparent 32rem),
-    radial-gradient(circle at 95% 8%, rgba(99, 102, 241, 0.13), transparent 28rem),
-    hsl(var(--background));
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-button, input, textarea {
+/* Animated multi-layer background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, hsla(166, 76%, 46%, 0.12), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 85% 10%, hsla(238, 60%, 62%, 0.10), transparent 45%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, hsla(166, 76%, 46%, 0.06), transparent 50%);
+}
+
+button,
+input,
+textarea {
   font: inherit;
+}
+
+/* ─── Focus ring ──────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ─── Scrollbar ───────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+/* ─── Keyframe Animations ─────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px hsla(166, 76%, 46%, 0.15); }
+  50%      { box-shadow: 0 0 40px hsla(166, 76%, 46%, 0.30); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: hsla(166, 76%, 46%, 0.2); }
+  50%      { border-color: hsla(166, 76%, 46%, 0.5); }
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30%           { opacity: 1;   transform: translateY(-4px); }
+}
+
+/* ─── Utility classes ─────────────────────────── */
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out both;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out both;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.4s ease-out both;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent 0%, hsla(166, 76%, 46%, 0.05) 50%, transparent 100%);
+    background-size: 800px 100%;
+    animation: shimmer 2s infinite linear;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  .animate-border-glow {
+    animation: border-glow 3s ease-in-out infinite;
+  }
+
+  /* Glass */
+  .glass {
+    background: hsla(var(--card), 0.6);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid hsla(var(--border), 0.5);
+  }
+
+  .glass-strong {
+    background: hsla(var(--card), 0.8);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid hsla(var(--border), 0.6);
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Delay utilities */
+  .delay-75  { animation-delay: 75ms; }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-700 { animation-delay: 700ms; }
 }

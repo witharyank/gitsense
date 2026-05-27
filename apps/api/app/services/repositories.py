@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import json
 from datetime import datetime
@@ -122,8 +123,7 @@ class RepositoryService:
 
     async def list_for_user(self, user: User) -> list[Repository]:
         result = await self.db.scalars(select(Repository).where(Repository.user_id == user.id).order_by(Repository.last_updated_at.desc().nullslast()))
-        repos = list(result)
-        return repos or await self.sync(user)
+        return list(result)
 
     async def get_owned(self, user: User, owner: str, repo_name: str) -> Repository:
         repo = await self.db.scalar(select(Repository).where(Repository.user_id == user.id, Repository.owner == owner, Repository.name == repo_name))
@@ -218,10 +218,12 @@ class RepositoryService:
         return doc
 
     async def _github_context(self, token: str, owner: str, repo_name: str) -> tuple[list[dict], list[dict], list[dict], dict]:
-        files = await self.github.contents(token, owner, repo_name)
-        contributors = await self.github.contributors(token, owner, repo_name)
-        commits = await self.github.commits(token, owner, repo_name)
-        languages = await self.github.languages(token, owner, repo_name)
+        files, contributors, commits, languages = await asyncio.gather(
+            self.github.contents(token, owner, repo_name),
+            self.github.contributors(token, owner, repo_name),
+            self.github.commits(token, owner, repo_name),
+            self.github.languages(token, owner, repo_name),
+        )
         return files, contributors, commits, languages
 
     async def _persist_commits(self, repository_id: UUID, commits: list[dict]) -> None:
