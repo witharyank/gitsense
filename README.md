@@ -1,39 +1,39 @@
-# 🌌 GitSense
+# GitSense
 
 GitSense is an AI-powered developer workspace designed for understanding, analyzing, and collaborating on GitHub repositories. Combining high-performance backend pipelines with a premium, high-fidelity dark UI, GitSense empowers developers to deep-dive into any codebase, chat with codebase context, extract commit intelligence, and generate documentation on the fly.
 
 ---
 
-## ✨ Features & Capabilities
+## Features & Capabilities
 
 GitSense offers a comprehensive developer cockpit equipped with four key AI-powered workflows and highly polished aesthetics:
 
-### 1. 📂 High-Performance Repository Sync
+### 1. High-Performance Repository Sync
 * **Concurrent Ingestion**: Speeds up repository indexing by using `asyncio.gather` on the backend to parallelize GitHub API calls (repository files, contributors, commits, and language stats) concurrently.
 * **Smart Sync Engine**: Persists repository data and integrates a Redis-backed caching layer for optimized GitHub/API read efficiency.
 
-### 2. 🤖 Interactive Codebase Workspace
+### 2. Interactive Codebase Workspace
 * **Overview & Tech Stack**: Renders visual technology badges mapping languages to clean, semantic pill tags, alongside interactive directory structures.
 * **Interactive Contributor Visualizers**: Displays contributor avatars, profiles, and precise commit tallies in an attractive hoverable card layout.
 * **Structured AI Summaries**: Generates high-granularity, AI-driven architectural maps (visualizing **Entry Points**, **Data Flows**, **Components**, and **User Flows** as interactive cards) paired with a simplified *"Beginner Explanation"* and *Probable Purpose* walkthroughs.
 
-### 3. 💬 Context-Aware Codebase Chat
+### 3. Context-Aware Codebase Chat
 * **Repository-Grounded Conversations**: Ask complex questions about the workspace codebase and receive immediate answers grounded in the repository files.
 * **Interactive Shortcuts**: Includes quick-prompt trigger chips (e.g., *"How is authentication handled?"*, *"Where are API routes defined?"*) for smooth, instantaneous onboarding.
 * **Fluent UI Experience**: Features interactive typing bubbles, sleek transitions, and auto-scroll behaviors.
 
-### 4. 📈 Commit Intelligence
+### 4. Commit Intelligence
 * **Weekly Progress Reports**: Translates chronological commit streams into a cohesive weekly progress summary.
 * **Commit-by-Commit Analyses**: AI analyzes individual commits to identify changes, code quality, and security risks.
 * **Actionable Contributor Insights**: Summarizes individual contributor impact, architectural drifts, and focus areas.
 
-### 5. 📝 On-Demand README Generator
+### 5. On-Demand README Generator
 * **Automatic Drafts**: Creates professional markdown documentation matching the indexed stack, files, and architectural flows of the repository.
 * **Instant Clipboard Actions**: Copies generated documents with a single-click button.
 
 ---
 
-## 🎨 Design System & Aesthetics
+## Design System & Aesthetics
 
 GitSense is built around a **premium, dark-mode-first visual language** featuring:
 * **Glassmorphic Interfaces**: Clean components using advanced background blur filters (`glass-strong` and custom border-border/50 styling) and dynamic light transmission.
@@ -43,7 +43,7 @@ GitSense is built around a **premium, dark-mode-first visual language** featurin
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend (Next.js Workspace)
 * **Core**: Next.js `15.1.3` (App Router), React `19`, and TypeScript.
@@ -70,7 +70,7 @@ GitSense is built around a **premium, dark-mode-first visual language** featurin
 
 ---
 
-## 📂 Architecture Blueprint
+## Architecture Blueprint
 
 ```text
 gitsense/
@@ -111,7 +111,7 @@ gitsense/
 
 ---
 
-## 🗄️ Database Schema Reference
+## Database Schema Reference
 
 The PostgreSQL database maintains a normalized relational structure mapping repository statistics and intelligence:
 
@@ -124,7 +124,7 @@ The PostgreSQL database maintains a normalized relational structure mapping repo
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Copy Environment Variables
 Duplicate the sample configuration file at the workspace root:
@@ -157,7 +157,7 @@ Once successfully built and loaded, navigate to:
 
 ---
 
-## 💻 Local Development Setup
+## Local Development Setup
 
 If you prefer to run the services bare-metal instead of inside Docker containers, follow these steps:
 
