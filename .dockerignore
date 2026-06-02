@@ -1,0 +1,40 @@
+# Node dependencies and build output
+node_modules
+npm-debug.log
+.next
+out
+build
+
+# Python environments and artifacts
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.venv
+venv
+ENV
+.pytest_cache
+.alembic
+
+# IDE and version control files
+.git
+.gitignore
+.gitattributes
+.github
+.idea
+.vscode
+
+# Environment config and secrets
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# Docker configurations
+docker-compose*.yml
+Dockerfile*
+
+# OS-specific files
+.DS_Store
+Thumbs.db

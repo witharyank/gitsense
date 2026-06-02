@@ -157,6 +157,40 @@ Once successfully built and loaded, navigate to:
 
 ---
 
+## Production Docker Deployment
+
+For live, secure, and production-ready deployments (VPS, DigitalOcean Droplet, AWS EC2, etc.), GitSense provides a hardened multi-stage container pipeline coordinated by Nginx:
+
+* **Single-Domain Reverse Proxy**: Nginx handles all SSL and request routing, serving the Next.js frontend at `/`, FastAPI endpoints at `/api/*`, `/health`, and API Swagger docs at `/docs`.
+* **Zero Database Exposure**: Postgres and Redis are locked inside the Docker internal network, unreachable from the public internet.
+* **Resilient Operations**: Automatic container restarts (`restart: unless-stopped`) and strict local log rotations (max 10MB limits) prevent container downtime and disk fatigue.
+
+### 1. Set Up Production Variables
+Prepare your production secrets in `.env`:
+```bash
+# General
+FRONTEND_URL=http://your-domain.com
+NEXT_PUBLIC_API_URL= # Keep empty to utilize single-domain routing!
+
+# DB secrets (highly secure)
+POSTGRES_PASSWORD=your_super_strong_password
+SESSION_SECRET=your_super_cryptographic_secret
+```
+
+### 2. Boot the Production Stack
+Run Docker Compose referencing the production configuration:
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+This builds the Next.js standalone container (~100MB), builds the secure Python non-root runner, and boots the services in the background.
+
+### 3. Verify Routing & Services
+* **Public Site (Next.js & APIs through Nginx)**: `http://your-domain.com`
+* **Secure API Health Check**: `http://your-domain.com/health`
+* **Swagger API Reference**: `http://your-domain.com/docs`
+
+---
+
 ## Local Development Setup
 
 If you prefer to run the services bare-metal instead of inside Docker containers, follow these steps:
