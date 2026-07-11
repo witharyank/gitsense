@@ -1,6 +1,6 @@
 # GitSense
 
-GitSense is an AI-powered developer workspace designed for understanding, analyzing, and collaborating on GitHub repositories. Combining high-performance backend pipelines with a premium, high-fidelity dark UI, GitSense empowers developers to deep-dive into any codebase, chat with codebase context, extract commit intelligence, and generate documentation on the fly.
+GitSense is an AI-powered workspace that helps developers understand, navigate, and collaborate on GitHub repositories. With contextual AI chat, deep codebase analysis, commit insights, and automated documentation, GitSense accelerates development and knowledge discovery.
 
 ---
 
