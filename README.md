@@ -237,3 +237,4 @@ If you prefer to run the services bare-metal instead of inside Docker containers
 Contributions are always welcome! Feel free to open an issue, suggest improvements, or submit a pull request.
 
 Happy coding! 
+You can mail you suggestion at: kraryan2028@gmail.com
