@@ -232,9 +232,13 @@ If you prefer to run the services bare-metal instead of inside Docker containers
    npm run dev
    ```
 4. Open [http://localhost:3000](http://localhost:3000) in your web browser.
-##  Contributing
+## Contributing
 
-Contributions are always welcome! Feel free to open an issue, suggest improvements, or submit a pull request.
+Contributions are always welcome! If you have ideas for improvements, find a bug, or want to add a new feature, feel free to open an issue or submit a pull request.
 
-Happy coding! 
-You can mail you suggestion at: kraryan2028@gmail.com
+Your feedback and suggestions are greatly appreciated.
+
+**Email:** [kraryan2028@gmail.com](mailto:kraryan2028@gmail.com)
+
+Happy Coding! 
+
