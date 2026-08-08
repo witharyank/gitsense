@@ -234,9 +234,34 @@ If you prefer to run the services bare-metal instead of inside Docker containers
 4. Open [http://localhost:3000](http://localhost:3000) in your web browser.
 ## Contributing
 
-Contributions are always welcome! If you have ideas for improvements, find a bug, or want to add a new feature, feel free to open an issue or submit a pull request.
+Contributions are always welcome and greatly appreciated! Whether you have an idea for improving the project, discover a bug, want to suggest a new feature, or simply want to help improve the documentation, your contributions can make a meaningful difference.
 
-Your feedback and suggestions are greatly appreciated.
+Before contributing, please take a moment to review the existing issues, documentation, and project guidelines to ensure your changes align with the goals of the project.
+
+### How to Contribute
+
+1. **Fork the repository** and create your own copy of the project.
+2. **Create a new branch** for your changes so that your work remains organized and isolated.
+3. **Make your changes** while keeping the existing code structure and project conventions in mind.
+4. **Test your changes** thoroughly to ensure they work as expected and do not introduce new issues.
+5. **Commit your changes** with a clear and descriptive commit message.
+6. **Push your branch** to your forked repository.
+7. **Open a Pull Request** and provide a clear explanation of what you changed and why.
+
+### Reporting Issues
+
+If you encounter a bug or unexpected behavior, please open an issue and provide as much relevant information as possible. Include steps to reproduce the problem, expected behavior, actual behavior, and any error messages or screenshots that may help us understand and resolve the issue.
+
+### Feature Requests
+
+Have an idea for a new feature or improvement? Feel free to open an issue and describe your idea in detail. Explain the problem it solves, how you think it could work, and why it would be useful to other users.
+
+### Code Quality
+
+Please keep contributions clean, readable, and consistent with the existing project. Avoid unnecessary changes, use meaningful names, and add comments or documentation where they improve clarity. If you are adding a new feature, please include appropriate tests whenever possible.
+
+Thank you for taking the time to contribute! Every bug report, suggestion, documentation improvement, and pull request helps make this project better for everyone. We truly appreciate your time and effort.
+
 
 **Email:** [kraryan2028@gmail.com](mailto:kraryan2028@gmail.com)
 
